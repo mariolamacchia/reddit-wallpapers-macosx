@@ -6,6 +6,7 @@ import requests
 import random
 import sys
 import shutil
+from threading import Timer
 import webbrowser
 from traceback import print_exc
 from appscript import app, mactypes
@@ -72,11 +73,20 @@ class RedditWallpaperApp(rumps.App):
         ]
         self.set_image(None)
 
-    @rumps.clicked("Reload")
+    @rumps.clicked("Reload...")
     def set_image(self, _):
+        def timeout():
+            self.set_image(_)
+
         try:
             reload_config()
+
+            auto_reload = config.getint('DEFAULT', 'auto_reload')
+            if auto_reload:
+                Timer(auto_reload, timeout).start()
+
             self.set_post(get_post())
+
         except Exception as e:
             print_exc()
 
