@@ -5,23 +5,33 @@ import requests
 import random
 import sys
 import shutil
+import webbrowser
+from traceback import print_exc
 from appscript import app, mactypes
 
 SUBREDDITS = ["earthporn"]
 
 
-def get_wallpaper():
+def get_img_url_from_post(post):
+    return post["preview"]["images"][0]["source"]["url"]
+
+
+def get_filename_from_post(post):
+    url = get_img_url_from_post(post)
+    return "/usr/local/var/mac-os-wallpaper/" + os.path.basename(url)
+
+
+def get_post():
     subreddit = random.choice(SUBREDDITS)
     r = requests.get("https://www.reddit.com/r/" + subreddit + ".json",
                      headers={'User-agent': 'mac-os-wallpaper-0.1'})
     json = r.json()["data"]["children"]
     posts = [post["data"] for post in json if "preview" in post["data"]]
-    post = random.choice(posts)
-    return post["preview"]["images"][0]["source"]["url"]
+    return random.choice(posts)
 
 
-def store_image(url):
-    filename = "/usr/local/var/mac-os-wallpaper/" + os.path.basename(url)
+def store_image_from_post(post):
+    filename = get_filename_from_post(post)
     if not os.path.exists(os.path.dirname(filename)):
         try:
             os.makedirs(os.path.dirname(filename))
@@ -29,28 +39,56 @@ def store_image(url):
             if exc.errno != errno.EEXIST:
                 raise
 
-    r = requests.get(url, stream=True)
+    r = requests.get(get_img_url_from_post(post), stream=True)
     if r.status_code == 200:
         with open(filename, 'wb') as f:
             r.raw.decode_content = True
             shutil.copyfileobj(r.raw, f)
 
-    return filename
+
+def set_background(filename):
+    app('Finder').desktop_picture.set(mactypes.File(filename))
 
 
 class RedditWallpaperApp(rumps.App):
     def __init__(self):
-        super(RedditWallpaperApp, self).__init__("Awesome App")
-        self.menu = ["Preferences", "Silly button", "Say hi"]
+        super(RedditWallpaperApp, self).__init__("Wallpapers from Reddit")
         self.icon = "icon.png"
+        self.current_menu = rumps.MenuItem('', callback=self.open_post)
+        self.menu = [
+            self.current_menu,
+            "Reload",
+            rumps.separator,
+        ]
+        self.set_image(None)
 
-    @rumps.clicked("Random image")
+    @rumps.clicked("Reload")
     def set_image(self, _):
         try:
-            filename = store_image(get_wallpaper())
-            app('Finder').desktop_picture.set(mactypes.File(filename))
+            self.set_post(get_post())
         except Exception as e:
-            print(sys.exc_info()[0], e)
+            print_exc()
+
+    def set_post(self, post):
+        self.current_post = post
+        store_image_from_post(post)
+        filename = get_filename_from_post(post)
+        set_background(filename)
+        self.update_menu()
+
+    def open_post(self, post):
+        try:
+            uri = self.current_post["permalink"]
+            webbrowser.open("https://www.reddit.com" + uri)
+        except Exception as e:
+            print_exc()
+
+    def update_menu(self):
+        post = self.current_post
+        title = post["title"]
+        if len(title) > 30:
+            title = title[:30] + "..."
+        self.current_menu.title = title
 
 
 if __name__ == "__main__":
