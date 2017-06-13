@@ -11,11 +11,12 @@ from traceback import print_exc
 from appscript import app, mactypes
 
 config = ConfigParser.ConfigParser()
+user_config_file_name = os.path.expanduser("~/.wallpapers")
 
 
 def reload_config():
     config.readfp(open("defaults.cfg"))
-    config.read([os.path.expanduser("~/.wallpapers")])
+    config.read([user_config_file_name])
 
 
 def get_img_url_from_post(post):
@@ -24,13 +25,13 @@ def get_img_url_from_post(post):
 
 def get_filename_from_post(post):
     url = get_img_url_from_post(post)
-    return "/usr/local/var/mac-os-wallpaper/" + os.path.basename(url)
+    return "/usr/local/var/mac-os-wallpapers/" + os.path.basename(url)
 
 
 def get_post():
     subreddit = random.choice(config.get("DEFAULT", "subreddits").split(","))
     r = requests.get("https://www.reddit.com/r/" + subreddit + ".json",
-                     headers={"User-agent": "mac-os-wallpaper-0.1"})
+                     headers={"User-agent": "mac-os-wallpapers-0.1"})
     json = r.json()["data"]["children"]
     posts = [post["data"] for post in json if "preview" in post["data"]]
     return random.choice(posts)
@@ -64,7 +65,9 @@ class RedditWallpaperApp(rumps.App):
         self.current_menu = rumps.MenuItem("", callback=self.open_post)
         self.menu = [
             self.current_menu,
-            "Reload",
+            "Reload...",
+            rumps.separator,
+            "Preferences",
             rumps.separator,
         ]
         self.set_image(None)
@@ -74,6 +77,15 @@ class RedditWallpaperApp(rumps.App):
         try:
             reload_config()
             self.set_post(get_post())
+        except Exception as e:
+            print_exc()
+
+    @rumps.clicked("Preferences")
+    def change_preferences(self, _):
+        try:
+            if not os.path.exists(user_config_file_name):
+                shutil.copyfile("defaults.cfg", user_config_file_name)
+            os.system("open ~/.wallpapers")
         except Exception as e:
             print_exc()
 
@@ -95,7 +107,7 @@ class RedditWallpaperApp(rumps.App):
         post = self.current_post
         title = post["title"]
         menu_max_length = config.getint("DEFAULT", "max_length")
-        if len(title) > menu_max_length:
+        if menu_max_length > 0 and len(title) > menu_max_length:
             title = title[:menu_max_length] + "..."
         title = title + " [/r/" + post["subreddit"] + "]"
         self.current_menu.title = title
