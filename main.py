@@ -19,6 +19,19 @@ def reload_config():
     config.readfp(open("defaults.cfg"))
     config.read([user_config_file_name])
 
+    # Run on startup
+    target = os.path.expanduser(
+        "~/Library/LaunchAgents/" +
+        "io.github.mariolamacchia.reddit-wallpapers-macosx.plist"
+        )
+    if config.getboolean("DEFAULT", "run_on_boot"):
+        shutil.copyfile("startup.plist", target)
+    else:
+        try:
+            os.remove(target)
+        except OSError:
+            pass
+
 
 def get_img_url_from_post(post):
     return post["preview"]["images"][0]["source"]["url"]
@@ -26,13 +39,13 @@ def get_img_url_from_post(post):
 
 def get_filename_from_post(post):
     url = get_img_url_from_post(post)
-    return "/usr/local/var/mac-os-wallpapers/" + os.path.basename(url)
+    return "/usr/local/var/reddit-wallpapers-macosx/" + os.path.basename(url)
 
 
 def get_post():
     subreddit = random.choice(config.get("DEFAULT", "subreddits").split(","))
     r = requests.get("https://www.reddit.com/r/" + subreddit + ".json",
-                     headers={"User-agent": "mac-os-wallpapers-0.1"})
+                     headers={"User-agent": "reddit-wallpapers-macosx-0.1"})
     json = r.json()["data"]["children"]
     posts = [post["data"] for post in json if "preview" in post["data"]]
     return random.choice(posts)
@@ -81,7 +94,7 @@ class RedditWallpaperApp(rumps.App):
         try:
             reload_config()
 
-            auto_reload = config.getint('DEFAULT', 'auto_reload')
+            auto_reload = config.getint("DEFAULT", "auto_reload")
             if auto_reload:
                 Timer(auto_reload, timeout).start()
 
