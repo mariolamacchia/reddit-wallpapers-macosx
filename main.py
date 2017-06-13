@@ -1,4 +1,5 @@
 import os
+import ConfigParser
 import errno
 import rumps
 import requests
@@ -9,7 +10,12 @@ import webbrowser
 from traceback import print_exc
 from appscript import app, mactypes
 
-SUBREDDITS = ["earthporn"]
+config = ConfigParser.ConfigParser()
+
+
+def reload_config():
+    config.readfp(open("defaults.cfg"))
+    config.read([os.path.expanduser("~/.wallpapers")])
 
 
 def get_img_url_from_post(post):
@@ -22,9 +28,9 @@ def get_filename_from_post(post):
 
 
 def get_post():
-    subreddit = random.choice(SUBREDDITS)
+    subreddit = random.choice(config.get("DEFAULT", "subreddits").split(","))
     r = requests.get("https://www.reddit.com/r/" + subreddit + ".json",
-                     headers={'User-agent': 'mac-os-wallpaper-0.1'})
+                     headers={"User-agent": "mac-os-wallpaper-0.1"})
     json = r.json()["data"]["children"]
     posts = [post["data"] for post in json if "preview" in post["data"]]
     return random.choice(posts)
@@ -41,20 +47,21 @@ def store_image_from_post(post):
 
     r = requests.get(get_img_url_from_post(post), stream=True)
     if r.status_code == 200:
-        with open(filename, 'wb') as f:
+        with open(filename, "wb") as f:
             r.raw.decode_content = True
             shutil.copyfileobj(r.raw, f)
 
 
 def set_background(filename):
-    app('Finder').desktop_picture.set(mactypes.File(filename))
+    app("Finder").desktop_picture.set(mactypes.File(filename))
 
 
 class RedditWallpaperApp(rumps.App):
     def __init__(self):
+        reload_config
         super(RedditWallpaperApp, self).__init__("Wallpapers from Reddit")
         self.icon = "icon.png"
-        self.current_menu = rumps.MenuItem('', callback=self.open_post)
+        self.current_menu = rumps.MenuItem("", callback=self.open_post)
         self.menu = [
             self.current_menu,
             "Reload",
@@ -65,6 +72,7 @@ class RedditWallpaperApp(rumps.App):
     @rumps.clicked("Reload")
     def set_image(self, _):
         try:
+            reload_config()
             self.set_post(get_post())
         except Exception as e:
             print_exc()
@@ -86,8 +94,10 @@ class RedditWallpaperApp(rumps.App):
     def update_menu(self):
         post = self.current_post
         title = post["title"]
-        if len(title) > 30:
-            title = title[:30] + "..."
+        menu_max_length = config.getint("DEFAULT", "max_length")
+        if len(title) > menu_max_length:
+            title = title[:menu_max_length] + "..."
+        title = title + " [/r/" + post["subreddit"] + "]"
         self.current_menu.title = title
 
 
