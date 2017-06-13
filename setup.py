@@ -92,7 +92,7 @@ setup(
   ],
   entry_points={
     'console_scripts': [
-      'reddit-wallpapers-macosx=reddit_wallpapers_macosx:main'
+      'reddit-wallpapers-macosx=reddit_wallpapers_macosx.main:run'
     ]
   }
 )
