@@ -7,7 +7,7 @@ setup(
   author='Mario Lamacchia',
   author_email='mariolamacchia@gmail.com',
   url='https://github.com/mariolamacchia/reddit-wallpapers-macosx',
-  download_url='https://github.com/mariolamacchia/reddit-wallpapers-macosx/archive/0.1.tar.gz',
+  download_url='https://github.com/mariolamacchia/reddit-wallpapers-macosx/archive/v0.1.tar.gz',
   keywords=['wallpapers', 'macosx', 'reddit'],
   classifiers=[],
 )
