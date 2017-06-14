@@ -1,5 +1,15 @@
 # Reddit Wallpapers for MacOSX
 
+<div style="
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    color: #a94442;
+    background-color: #f2dede;
+    border-color: #ebccd1;"
+>Work in progress!</div>
+
 Bored of looking at the same wallpaper every single day?
 
 This script continuously changes wallpapers from your favourite subreddits.
