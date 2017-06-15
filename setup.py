@@ -93,7 +93,7 @@ setup(
       "plist": {
         "LSUIElement": True,
       },
-      "packages": ["rumps"],
+      "packages": ["rumps", "requests", "certifi"],
       "resources": ["resources"]
     },
   },
