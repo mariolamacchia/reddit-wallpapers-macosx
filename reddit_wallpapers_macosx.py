@@ -12,9 +12,12 @@ from appscript import app, mactypes
 
 config = ConfigParser.ConfigParser()
 user_config_file_name = os.path.expanduser("~/.wallpapers")
+log_file_name = os.path.expanduser("/usr/local/var/reddit_wallpapers_macosx.log")
+f = open(log_file_name, 'a')
 
 
 def handle_error(e):
+    f.write(e.message)
     os.system("""
           osascript -e 'display notification "{}" with title "{}"'
           """.format(e.message, "Error! :S"))
