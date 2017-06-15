@@ -1,0 +1,13 @@
+language: python
+python:
+- '2.7'
+install: pip install -r requirements.txt
+deploy:
+  provider: releases
+  api_key:
+    secure: NP/qBNw7HK3RYxq0u2LmqVqVLNqNBxwk53LB2LtwJ8nqlb8jQiDGnB/jknWua5ZDmkC7gy/QEFkyOvyMV8eszxXD7U6qzsI2RXJY+FuN8tYA96e7D0lI3X7d/ASjn5DvViCkEF8lwGfk8p2/6Pl0IXiygLFU8zHZfbZZWEdbB2hB+lqApORZVtfdO8mDBet8T9raaFT7Y07K0M30Uma3GfDIm/3RGwWsB3k+Tv4aEJWSQGl3f/jdjuBo90bERA/DCFpqL5av0kuZcCR0W7fbA+YHvNuRz8j8q7xKZcZm7HuECJr4Xfo7zcVUtMlNxtLl1HGe2zp4XoFAaUsZH6FH6z1EogsQi4cAW6dpAIzFDl7NWm9dnG2kpbe1JtzgDEEeyc2PyRn29NURNed8UI7TcWoaplXBk/hh+lD662jamnD5ZaNukIGdjPI+NyFbEXKhER8ffOmXLpbDiDaRA9/rlbz3ABmOyOLNIV2P0GP1nWPot9fodyXc8s5/L9ThM3T87M4WIsudj6SNdnO0G3PWvZudrQhA+c6hhWe9zlwQiK1ApWX2TyTGZPbu7dWTfQ9Uvsb/Yr8tiF67XGP5VRy3uv+DhGMSHws3HG69qFrFCEXMBk8gogKa+EWQoUXLo3M++bvGccpk140xtm3e8Yo/+1Y9zoSEGie4kdUozkb1qGA=
+  file: dist/reddit_wallpapers_macosx.app
+  skip_cleanup: true
+  on:
+    repo: mariolamacchia/reddit-wallpapers-macosx
+    tags: true
