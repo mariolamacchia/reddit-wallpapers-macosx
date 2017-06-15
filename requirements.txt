@@ -1,6 +1,7 @@
 appscript==1.0.1
 certifi==2017.4.17
 chardet==3.0.4
+ez-setup==0.9
 idna==2.5
 pyobjc==3.2.1
 pyobjc-core==3.2.1
