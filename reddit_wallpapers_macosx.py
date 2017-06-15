@@ -8,11 +8,16 @@ import sys
 import shutil
 from threading import Timer
 import webbrowser
-from traceback import print_exc
 from appscript import app, mactypes
 
 config = ConfigParser.ConfigParser()
 user_config_file_name = os.path.expanduser("~/.wallpapers")
+
+
+def handle_error(e):
+    os.system("""
+          osascript -e 'display notification "{}" with title "{}"'
+          """.format(e.message, "Error! :S"))
 
 
 def get_resource_path(relative_path):
@@ -78,7 +83,6 @@ def set_background(filename):
 
 class RedditWallpaperApp(rumps.App):
     def __init__(self):
-        reload_config
         super(RedditWallpaperApp, self).__init__("Wallpapers from Reddit")
         self.icon = get_resource_path("icon.png")
         self.current_menu = rumps.MenuItem("", callback=self.open_post)
@@ -106,7 +110,7 @@ class RedditWallpaperApp(rumps.App):
             self.set_post(get_post())
 
         except Exception as e:
-            print_exc()
+            handle_error(e)
 
     @rumps.clicked("Preferences")
     def change_preferences(self, _):
@@ -116,7 +120,7 @@ class RedditWallpaperApp(rumps.App):
                                 user_config_file_name)
             os.system("open ~/.wallpapers")
         except Exception as e:
-            print_exc()
+            handle_error(e)
 
     def set_post(self, post):
         self.current_post = post
@@ -130,7 +134,7 @@ class RedditWallpaperApp(rumps.App):
             uri = self.current_post["permalink"]
             webbrowser.open("https://www.reddit.com" + uri)
         except Exception as e:
-            print_exc()
+            handle_error(e)
 
     def update_menu(self):
         post = self.current_post
