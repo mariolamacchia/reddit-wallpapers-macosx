@@ -15,13 +15,13 @@ config = ConfigParser.ConfigParser()
 user_config_file_name = os.path.expanduser("~/.wallpapers")
 
 
-def get_path(relative_path):
+def get_resource_path(relative_path):
     dir_path = os.path.dirname(os.path.realpath(__file__))
-    return dir_path + "/" + relative_path
+    return dir_path + "/resources/" + relative_path
 
 
 def reload_config():
-    config.readfp(open(get_path("defaults.cfg")))
+    config.readfp(open(get_resource_path("defaults.cfg")))
     config.read([user_config_file_name])
 
     # Run on startup
@@ -30,7 +30,7 @@ def reload_config():
         "io.github.mariolamacchia.reddit-wallpapers-macosx.plist"
         )
     if config.getboolean("DEFAULT", "run_on_boot"):
-        shutil.copyfile(get_path("startup.plist"), target)
+        shutil.copyfile(get_resource_path("startup.plist"), target)
     else:
         try:
             os.remove(target)
@@ -80,7 +80,7 @@ class RedditWallpaperApp(rumps.App):
     def __init__(self):
         reload_config
         super(RedditWallpaperApp, self).__init__("Wallpapers from Reddit")
-        self.icon = get_path("icon.png")
+        self.icon = get_resource_path("icon.png")
         self.current_menu = rumps.MenuItem("", callback=self.open_post)
         self.menu = [
             self.current_menu,
@@ -112,7 +112,7 @@ class RedditWallpaperApp(rumps.App):
     def change_preferences(self, _):
         try:
             if not os.path.exists(user_config_file_name):
-                shutil.copyfile(get_path("defaults.cfg"),
+                shutil.copyfile(get_resource_path("defaults.cfg"),
                                 user_config_file_name)
             os.system("open ~/.wallpapers")
         except Exception as e:
@@ -142,5 +142,5 @@ class RedditWallpaperApp(rumps.App):
         self.current_menu.title = title
 
 
-def run():
+if __name__ == "__main__":
     RedditWallpaperApp().run()

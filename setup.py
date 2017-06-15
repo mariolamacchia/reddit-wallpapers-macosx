@@ -1,16 +1,13 @@
 from setuptools import setup
 
 setup(
-  name='reddit_wallpapers_macosx',
-  packages=['reddit_wallpapers_macosx'],
-  package_dir={'reddit_wallpapers_macosx': 'reddit_wallpapers_macosx'},
-  package_data={'reddit_wallpapers_macosx': ['*.png', '*.plist', '*.cfg']},
-  version='0.1',
-  description='Reddit Wallpapers for MacOSX',
-  author='Mario Lamacchia',
-  author_email='mariolamacchia@gmail.com',
-  url='https://github.com/mariolamacchia/reddit-wallpapers-macosx',
-  keywords=['wallpapers', 'macosx', 'reddit'],
+  name="reddit_wallpapers_macosx",
+  version="0.1",
+  description="Reddit Wallpapers for MacOSX",
+  author="Mario Lamacchia",
+  author_email="mariolamacchia@gmail.com",
+  url="https://github.com/mariolamacchia/reddit-wallpapers-macosx",
+  keywords=["wallpapers", "macosx", "reddit"],
   classifiers=[],
   install_requires=[
     "appscript==1.0.1",
@@ -90,9 +87,16 @@ setup(
     "rumps==0.2.2",
     "urllib3==1.21.1",
   ],
-  entry_points={
-    'console_scripts': [
-      'reddit-wallpapers-macosx=reddit_wallpapers_macosx.main:run'
-    ]
-  }
+  options={
+    "py2app": {
+      "argv_emulation": True,
+      "plist": {
+        "LSUIElement": True,
+      },
+      "packages": ["rumps"],
+      "resources": ["resources"]
+    },
+  },
+  setup_requires=["py2app"],
+  app=["reddit_wallpapers_macosx.py"],
 )
