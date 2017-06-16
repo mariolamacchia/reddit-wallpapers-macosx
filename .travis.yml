@@ -4,6 +4,7 @@ os:
 install:
   - pip install -r requirements.txt
   - python setup.py py2app
+  - sudo ./build.sh
 deploy:
   -
     provider: releases
