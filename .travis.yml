@@ -1,12 +1,9 @@
 language: generic
-before_install:
-    - brew update
-    - brew install python
-    - virtualenv env -p python
-    - source env/bin/activate
 os:
   - osx
-install: pip install -r requirements.txt
+install:
+  - pip install -r requirements.txt
+  - python setup.py py2app
 deploy:
   -
     provider: releases
