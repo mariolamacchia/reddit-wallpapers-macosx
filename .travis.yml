@@ -14,4 +14,4 @@ deploy:
     skip_cleanup: true
     on:
       repo: mariolamacchia/reddit-wallpapers-macosx
-      branch: develop
+      tags: true
