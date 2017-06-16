@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(
-  name="reddit_wallpapers_macosx",
+  name="Reddit Wallpapers",
   version="0.1",
   description="Reddit Wallpapers for MacOSX",
   author="Mario Lamacchia",

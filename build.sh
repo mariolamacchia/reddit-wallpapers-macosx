@@ -2,8 +2,8 @@ source=dist
 title="Reddit Wallpapers"
 size=15000
 backgroundPictureName="background.png"
-applicationName="reddit_wallpapers_macosx.app"
-finalDMGName="reddit-wallpapers"
+applicationName="Reddit Wallpapers.app"
+finalDMGName="reddit-wallpapers.dmg"
 
 cp -R .background dist
 
@@ -21,7 +21,7 @@ echo '
            set current view of container window to icon view
            set toolbar visible of container window to false
            set statusbar visible of container window to false
-           set the bounds of container window to {400, 100, 1040, 430}
+           set the bounds of container window to {400, 100, 1040, 500}
            set theViewOptions to the icon view options of container window
            set arrangement of theViewOptions to not arranged
            set icon size of theViewOptions to 100
@@ -40,5 +40,5 @@ chmod -Rf go-w /Volumes/"${title}"
 sync
 sync
 hdiutil detach ${device}
-hdiutil convert "/pack.temp.dmg" -format UDZO -imagekey zlib-level=9 -o "${finalDMGName}"
+hdiutil convert "pack.temp.dmg" -format UDZO -imagekey zlib-level=9 -o "${finalDMGName}"
 rm -f /pack.temp.dmg
