@@ -93,6 +93,7 @@ setup(
       "plist": {
         "LSUIElement": True,
       },
+      "iconfile": "icon.icns",
       "packages": ["rumps", "requests", "certifi"],
       "resources": ["resources"]
     },
