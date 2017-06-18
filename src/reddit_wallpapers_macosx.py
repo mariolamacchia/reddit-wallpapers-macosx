@@ -13,9 +13,7 @@ from appscript import app, mactypes
 
 config = ConfigParser.ConfigParser()
 user_config_file_name = os.path.expanduser("~/.wallpapers")
-log_file_name = os.path.expanduser(
-                "/usr/local/var/reddit-wallpapers-macosx/errors.log"
-                )
+log_file_name = "/usr/local/var/reddit-wallpapers-macosx/errors.log"
 
 
 def handle_error(e):
