@@ -97,14 +97,16 @@ class RedditWallpaperApp(rumps.App):
         self.quit_button = "Quite Reddit Wallpapers"
         self.menu = [
             self.current_menu,
-            "Reload...",
+            rumps.MenuItem("Change wallpaper",
+                           key="change",
+                           callback=self.set_image,
+                           ),
             rumps.separator,
             "Preferences",
             rumps.separator,
         ]
         self.set_image(None)
 
-    @rumps.clicked("Reload...")
     def set_image(self, _):
         def timeout():
             self.set_image(_)
