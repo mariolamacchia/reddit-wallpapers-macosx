@@ -94,6 +94,7 @@ class RedditWallpaperApp(rumps.App):
         super(RedditWallpaperApp, self).__init__("Wallpapers from Reddit")
         self.icon = get_resource_path("icon.png")
         self.current_menu = rumps.MenuItem("", callback=self.open_post)
+        self.quit_button = "Quite Reddit Wallpapers"
         self.menu = [
             self.current_menu,
             "Reload...",
