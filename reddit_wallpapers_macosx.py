@@ -23,9 +23,6 @@ def handle_error(e):
     f.write(e.message)
     f.write(format_exc())
     f.close()
-    os.system("""
-          osascript -e 'display notification "{}" with title "{}"'
-          """.format(e.message, "Error! :S"))
 
 
 def get_resource_path(relative_path):
