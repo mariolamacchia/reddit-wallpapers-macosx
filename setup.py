@@ -95,9 +95,9 @@ setup(
       },
       "iconfile": "icon.icns",
       "packages": ["rumps", "requests", "certifi"],
-      "resources": ["resources"]
+      "resources": ["src/resources"]
     },
   },
   setup_requires=["py2app"],
-  app=["reddit_wallpapers_macosx.py"],
+  app=["src/reddit_wallpapers_macosx.py"],
 )
