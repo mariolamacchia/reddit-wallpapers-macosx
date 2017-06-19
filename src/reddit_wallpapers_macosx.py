@@ -52,21 +52,35 @@ class RedditWallpaperApp(App):
             self.current_menu,
             MenuItem("Change wallpaper", callback=self.set_image),
             separator,
-            MenuItem("Preferences", callback=self.change_preferences),
+            MenuItem("Open preferences file",
+                     callback=self.change_preferences),
+            MenuItem("Reload Preferences", callback=self.update_preferences),
             separator,
         ]
         self.set_image(None)
 
-    def set_image(self, _):
+    def update_preferences(self, _):
+        preferences.load()
+        if hasattr(self, 'timer'):
+            self.timer.cancel()
+        self.set_timer()
+
+    def set_timer(self):
         def timeout():
-            self.set_image(_)
+            print 'timeout'
+            self.set_image(None)
+
+        auto_reload = preferences.auto_reload
+        print auto_reload
+        if auto_reload:
+            self.timer = Timer(auto_reload, timeout)
+            print 'start'
+            self.timer.start()
+
+    def set_image(self, _):
+        self.set_timer()
 
         try:
-            preferences.load()
-            auto_reload = preferences.auto_reload
-            if auto_reload:
-                Timer(auto_reload, timeout).start()
-
             post = get_random_post()
             self.current_post = post
 
