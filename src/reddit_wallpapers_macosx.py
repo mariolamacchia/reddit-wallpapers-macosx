@@ -12,8 +12,9 @@ from traceback import format_exc
 from appscript import app, mactypes
 
 from config import (
-    resources_folder, preferences,
-    load_preferences, create_preference_file,
+    resources_folder,
+    preferences,
+    create_preference_file,
     preferences_file,
 )
 
@@ -35,7 +36,7 @@ def reload_config():
         "~/Library/LaunchAgents/" +
         "io.github.mariolamacchia.reddit-wallpapers-macosx.plist"
         )
-    if preferences["run_on_boot"]:
+    if preferences.run_on_boot:
         shutil.copyfile(resources_folder + "/startup.plist", target)
     else:
         try:
@@ -54,7 +55,7 @@ def get_filename_from_post(post):
 
 
 def get_post():
-    subreddit = random.choice(preferences["subreddits"])
+    subreddit = random.choice(preferences.subreddits)
     r = requests.get("https://www.reddit.com/r/" + subreddit + ".json",
                      headers={"User-agent": "reddit-wallpapers-macosx-0.1"})
     json = r.json()["data"]["children"]
@@ -105,9 +106,9 @@ class RedditWallpaperApp(rumps.App):
             self.set_image(_)
 
         try:
-            load_preferences()
+            preferences.load()
 
-            auto_reload = preferences["auto_reload"]
+            auto_reload = preferences.auto_reload
             if auto_reload:
                 Timer(auto_reload, timeout).start()
             self.set_post(get_post())
@@ -139,7 +140,7 @@ class RedditWallpaperApp(rumps.App):
     def update_menu(self):
         post = self.current_post
         title = post["title"]
-        menu_max_length = preferences["max_length"]
+        menu_max_length = preferences.max_length
         if menu_max_length > 0 and len(title) > menu_max_length:
             title = title[:menu_max_length] + "..."
         title = title + " [/r/" + post["subreddit"] + "]"

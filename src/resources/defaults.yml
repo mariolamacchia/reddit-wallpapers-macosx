@@ -1,6 +1,11 @@
-[DEFAULT]
-# Insert here the list of subreddits separated by commas
-subreddits: wallpapers,spaceporn,earthporn,wallpaper,ultrahdwallpapers,WQHD_Wallpaper
+# Insert here the list of subreddits
+subreddits:
+    - wallpapers
+    - spaceporn
+    - earthporn
+    - wallpaper
+    - ultrahdwallpapers
+    - WQHD_Wallpaper
 
 # Max length of the post's name in the menu
 # 0 to remove any limits
