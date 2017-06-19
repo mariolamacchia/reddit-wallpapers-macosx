@@ -11,8 +11,8 @@ import webbrowser
 from traceback import format_exc
 from appscript import app, mactypes
 
-config = ConfigParser.ConfigParser()
-user_config_file_name = os.path.expanduser("~/.wallpapers")
+from config import preferences, load_preferences, create_preference_file, preferences_file
+
 log_file_name = "/usr/local/var/reddit-wallpapers-macosx/errors.log"
 
 
@@ -29,15 +29,14 @@ def get_resource_path(relative_path):
 
 
 def reload_config():
-    config.readfp(open(get_resource_path("defaults.cfg")))
-    config.read([user_config_file_name])
+    load_preferences()
 
     # Run on startup
     target = os.path.expanduser(
         "~/Library/LaunchAgents/" +
         "io.github.mariolamacchia.reddit-wallpapers-macosx.plist"
         )
-    if config.getboolean("DEFAULT", "run_on_boot"):
+    if preferences["run_on_boot"]:
         shutil.copyfile(get_resource_path("startup.plist"), target)
     else:
         try:
@@ -56,7 +55,7 @@ def get_filename_from_post(post):
 
 
 def get_post():
-    subreddit = random.choice(config.get("DEFAULT", "subreddits").split(","))
+    subreddit = random.choice(preferences["subreddits"])
     r = requests.get("https://www.reddit.com/r/" + subreddit + ".json",
                      headers={"User-agent": "reddit-wallpapers-macosx-0.1"})
     json = r.json()["data"]["children"]
@@ -107,24 +106,20 @@ class RedditWallpaperApp(rumps.App):
             self.set_image(_)
 
         try:
-            reload_config()
+            load_preferences()
 
-            auto_reload = config.getint("DEFAULT", "auto_reload")
+            auto_reload = preferences["auto_reload"]
             if auto_reload:
                 Timer(auto_reload, timeout).start()
-
             self.set_post(get_post())
-
         except Exception as e:
             handle_error(e)
 
     @rumps.clicked("Preferences")
     def change_preferences(self, _):
         try:
-            if not os.path.exists(user_config_file_name):
-                shutil.copyfile(get_resource_path("defaults.cfg"),
-                                user_config_file_name)
-            os.system("open ~/.wallpapers")
+            create_preference_file()
+            os.system("open " + preferences_file)
         except Exception as e:
             handle_error(e)
 
@@ -145,7 +140,7 @@ class RedditWallpaperApp(rumps.App):
     def update_menu(self):
         post = self.current_post
         title = post["title"]
-        menu_max_length = config.getint("DEFAULT", "max_length")
+        menu_max_length = preferences["max_length"]
         if menu_max_length > 0 and len(title) > menu_max_length:
             title = title[:menu_max_length] + "..."
         title = title + " [/r/" + post["subreddit"] + "]"
