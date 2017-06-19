@@ -23,8 +23,6 @@ def handle_error(e):
     f.close()
 
 
-
-
 class RedditWallpaperApp(App):
     def __init__(self):
         try:
