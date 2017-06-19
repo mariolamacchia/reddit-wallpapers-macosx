@@ -3,6 +3,7 @@ import requests
 from shutil import copyfileobj
 
 var_folder = "/usr/local/var/reddit-wallpapers-macosx"
+log_file_name = var_folder + "/errors.log"
 
 
 def create_var_folder():
@@ -25,3 +26,10 @@ def store_image(post):
             copyfileobj(r.raw, f)
 
     return filename
+
+
+def log_error(e):
+    f = open(log_file_name, 'a')
+    f.write(e.message)
+    f.write(format_exc())
+    f.close()

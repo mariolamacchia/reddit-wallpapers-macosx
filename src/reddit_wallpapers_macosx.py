@@ -11,16 +11,12 @@ from config import (
 )
 from reddit import get_random_post
 from osx import set_run_on_boot, open_webpage, set_wallpaper
-
-log_file_name = "/usr/local/var/reddit-wallpapers-macosx/errors.log"
+from var import log_error
 
 
 def handle_error(e):
     print(format_exc())
-    f = open(log_file_name, 'a')
-    f.write(e.message)
-    f.write(format_exc())
-    f.close()
+    log_error(e)
 
 
 class RedditWallpaperApp(App):
