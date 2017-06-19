@@ -3,8 +3,9 @@ from shutil import copyfile
 from ConfigParser import ConfigParser
 
 app_folder = path.dirname(path.realpath(__file__))
+resources_folder = app_folder + "/resources"
 user_folder = path.expanduser("~/.wallpapers")
-default_preferences_file = app_folder + "/resources/defaults.cfg"
+default_preferences_file = resources_folder + "/defaults.cfg"
 preferences_file = user_folder + "/preferences.cfg"
 preferences = {}
 

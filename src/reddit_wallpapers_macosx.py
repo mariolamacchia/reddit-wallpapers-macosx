@@ -12,7 +12,9 @@ from traceback import format_exc
 from appscript import app, mactypes
 
 from config import (
-    preferences, load_preferences, create_preference_file, preferences_file
+    resources_folder, preferences,
+    load_preferences, create_preference_file,
+    preferences_file,
 )
 
 log_file_name = "/usr/local/var/reddit-wallpapers-macosx/errors.log"
@@ -25,11 +27,6 @@ def handle_error(e):
     f.close()
 
 
-def get_resource_path(relative_path):
-    dir_path = os.path.dirname(os.path.realpath(__file__))
-    return dir_path + "/resources/" + relative_path
-
-
 def reload_config():
     load_preferences()
 
@@ -39,7 +36,7 @@ def reload_config():
         "io.github.mariolamacchia.reddit-wallpapers-macosx.plist"
         )
     if preferences["run_on_boot"]:
-        shutil.copyfile(get_resource_path("startup.plist"), target)
+        shutil.copyfile(resources_folder + "/startup.plist", target)
     else:
         try:
             os.remove(target)
@@ -88,7 +85,7 @@ def set_background(filename):
 class RedditWallpaperApp(rumps.App):
     def __init__(self):
         super(RedditWallpaperApp, self).__init__("Wallpapers from Reddit")
-        self.icon = get_resource_path("icon.png")
+        self.icon = resources_folder + "/icon.png"
         self.current_menu = rumps.MenuItem("", callback=self.open_post)
         self.quit_button = "Quite Reddit Wallpapers"
         self.menu = [
