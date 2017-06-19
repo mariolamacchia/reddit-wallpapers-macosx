@@ -44,26 +44,33 @@ def reload_config():
 
 class RedditWallpaperApp(App):
     def __init__(self):
-        super(RedditWallpaperApp, self).__init__("Wallpapers from Reddit")
-        self.icon = resources_folder + "/icon.png"
-        self.current_menu = MenuItem("", callback=self.open_post)
-        self.quit_button = "Quite Reddit Wallpapers"
-        self.menu = [
-            self.current_menu,
-            MenuItem("Change wallpaper", callback=self.set_image),
-            separator,
-            MenuItem("Open preferences file",
-                     callback=self.change_preferences),
-            MenuItem("Reload Preferences", callback=self.update_preferences),
-            separator,
-        ]
-        self.set_image(None)
+        try:
+            super(RedditWallpaperApp, self).__init__("Wallpapers from Reddit")
+            self.icon = resources_folder + "/icon.png"
+            self.current_menu = MenuItem("", callback=self.open_post)
+            self.quit_button = "Quite Reddit Wallpapers"
+            self.menu = [
+                self.current_menu,
+                MenuItem("Change wallpaper", callback=self.set_image),
+                separator,
+                MenuItem("Open preferences file",
+                         callback=self.change_preferences),
+                MenuItem("Reload Preferences",
+                         callback=self.update_preferences),
+                separator,
+            ]
+            self.set_image(None)
+        except Exception as e:
+            handle_error(e)
 
     def update_preferences(self, _):
-        preferences.load()
-        if hasattr(self, 'timer'):
-            self.timer.cancel()
-        self.set_timer()
+        try:
+            preferences.load()
+            if hasattr(self, 'timer'):
+                self.timer.cancel()
+            self.set_timer()
+        except Exception as e:
+            handle_error(e)
 
     def set_timer(self):
         auto_reload = preferences.auto_reload
