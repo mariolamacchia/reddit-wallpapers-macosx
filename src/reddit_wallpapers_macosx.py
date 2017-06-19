@@ -11,7 +11,9 @@ import webbrowser
 from traceback import format_exc
 from appscript import app, mactypes
 
-from config import preferences, load_preferences, create_preference_file, preferences_file
+from config import (
+    preferences, load_preferences, create_preference_file, preferences_file
+)
 
 log_file_name = "/usr/local/var/reddit-wallpapers-macosx/errors.log"
 
