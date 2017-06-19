@@ -1,9 +1,6 @@
 import os
-import webbrowser
-from shutil import copyfile
 from threading import Timer
 from traceback import format_exc
-from appscript import app, mactypes
 from rumps import App, MenuItem, separator
 
 from config import (
@@ -13,6 +10,7 @@ from config import (
     preferences_file,
 )
 from reddit import get_random_post
+from osx import set_run_on_boot, open_webpage, set_wallpaper
 
 log_file_name = "/usr/local/var/reddit-wallpapers-macosx/errors.log"
 
@@ -25,21 +23,6 @@ def handle_error(e):
     f.close()
 
 
-def reload_config():
-    load_preferences()
-
-    # Run on startup
-    target = os.path.expanduser(
-        "~/Library/LaunchAgents/" +
-        "io.github.mariolamacchia.reddit-wallpapers-macosx.plist"
-        )
-    if preferences.run_on_boot:
-        copyfile(resources_folder + "/startup.plist", target)
-    else:
-        try:
-            os.remove(target)
-        except OSError:
-            pass
 
 
 class RedditWallpaperApp(App):
@@ -69,6 +52,7 @@ class RedditWallpaperApp(App):
             if hasattr(self, 'timer'):
                 self.timer.cancel()
             self.set_timer()
+            set_run_on_boot(preferences.run_on_boot)
         except Exception as e:
             handle_error(e)
 
@@ -79,14 +63,13 @@ class RedditWallpaperApp(App):
             self.timer.start()
 
     def set_image(self, _):
-        self.set_timer()
-
         try:
+            self.set_timer()
             post = get_random_post()
             self.current_post = post
 
             # Set desktop wallpaper
-            app("Finder").desktop_picture.set(mactypes.File(post.local_path))
+            set_wallpaper(post.local_path)
 
             # Update menu
             title = post.title
@@ -108,8 +91,8 @@ class RedditWallpaperApp(App):
 
     def open_post(self, post):
         try:
-            uri = self.current_post.permalink
-            webbrowser.open("https://www.reddit.com" + self.current_post)
+            url = "https://www.reddit.com" + self.current_post.permalink
+            open_webpage(url)
         except Exception as e:
             handle_error(e)
 
