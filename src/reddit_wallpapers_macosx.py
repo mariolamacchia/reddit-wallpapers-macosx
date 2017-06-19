@@ -66,15 +66,9 @@ class RedditWallpaperApp(App):
         self.set_timer()
 
     def set_timer(self):
-        def timeout():
-            print 'timeout'
-            self.set_image(None)
-
         auto_reload = preferences.auto_reload
-        print auto_reload
         if auto_reload:
-            self.timer = Timer(auto_reload, timeout)
-            print 'start'
+            self.timer = Timer(auto_reload, self.set_image, [None])
             self.timer.start()
 
     def set_image(self, _):
