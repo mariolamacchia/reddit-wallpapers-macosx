@@ -83,7 +83,7 @@ setup(
     "pyobjc-framework-SyncServices==3.2.1",
     "pyobjc-framework-SystemConfiguration==3.2.1",
     "pyobjc-framework-WebKit==3.2.1",
-    "requests==2.17.3",
+    "requests==2.20.0",
     "rumps==0.2.2",
     "urllib3==1.24.2",
   ],
