@@ -85,7 +85,7 @@ setup(
     "pyobjc-framework-WebKit==3.2.1",
     "requests==2.20.0",
     "rumps==0.2.2",
-    "urllib3==1.25.7",
+    "urllib3==1.26.5",
   ],
   options={
     "py2app": {
