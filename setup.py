@@ -11,7 +11,7 @@ setup(
   classifiers=[],
   install_requires=[
     "appscript==1.0.1",
-    "certifi==2017.4.17",
+    "certifi==2022.12.7",
     "chardet==3.0.4",
     "idna==2.5",
     "pyobjc==3.2.1",
